@@ -16,5 +16,15 @@
             }
         }
         return found;
+    };
+    //Summarize array:  Use on an array of numbers only.  non numerics are ignored
+    Array.prototype.Sum = function() {
+        var sum = 0;
+        for (var i = 0; i < this.length; i++) {
+        if (!isNaN(this[i])) {
+            sum += this[i];
+        }
     }
+        return sum;
+    };
 })();
