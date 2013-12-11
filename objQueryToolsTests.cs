@@ -1,45 +1,28 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JSTest;
-using JSTest.ScriptElements;
 using JSTest.ScriptLibraries;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CMPUnitTests
+namespace objectQueryLib
 {
     /// <summary>
     /// Summary description for objQueryToolsTests
     /// </summary>
     [TestClass]
-    public class objQueryToolsTests
+    public class ObjQueryToolsTests
     {
         private readonly TestScript _objTestScript = new TestScript();
 
-        public objQueryToolsTests()
+        public ObjQueryToolsTests()
         {
-            _objTestScript.AppendFile(@"JavaScript\objectQueryTools.js");
+            _objTestScript.AppendFile(@"C:\objectQueryLib\objectQueryLib\JavaScript\objectQueryTools.js");
             _objTestScript.AppendBlock(new JsAssertLibrary());
         }
-
-        private TestContext testContextInstance;
 
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
         ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
+        public TestContext TestContext { get; set; }
 
         #region Additional test attributes
         //
@@ -62,6 +45,8 @@ namespace CMPUnitTests
         // public void MyTestCleanup() { }
         //
         #endregion
+
+        #region AnyMatch
 
         [TestMethod]
         public void NoObjectOrConditions_ReturnFalse()
@@ -110,5 +95,39 @@ namespace CMPUnitTests
             _objTestScript.AppendBlock(@" var department = 'ITT'; var departments = ['HR','IT','Accounting']; ");
             _objTestScript.RunTest(@"assert.equal(false, departments.AnyMatch(department, function(l,o) {return l === o}));", true);
         }
+
+        #endregion
+
+        #region Sum
+
+        [TestMethod]
+        public void ArrayIsEmpty_ReturnZero()
+        {
+            _objTestScript.AppendBlock(@" var amounts = []; ");
+            _objTestScript.RunTest(@"assert.equal(0, amounts.Sum());", true);
+        }
+
+        [TestMethod]
+        public void ArrayIsAllNumbers_ReturnTotal()
+        {
+            _objTestScript.AppendBlock(@" var amounts = [100,150,200]; ");
+            _objTestScript.RunTest(@"assert.equal(450, amounts.Sum());", true);
+        }
+
+        [TestMethod]
+        public void ArrayNonNumericIgnored_ReturnTotal()
+        {
+            _objTestScript.AppendBlock(@" var amounts = [100,'test',200]; ");
+            _objTestScript.RunTest(@"assert.equal(300, amounts.Sum());", true);
+        }
+
+        [TestMethod]
+        public void ArrayNumericStringNotIgnored_ReturnTotal()
+        {
+            _objTestScript.AppendBlock(@" var amounts = [100,'50',200]; ");
+            _objTestScript.RunTest(@"assert.equal(350, amounts.Sum());", true);
+        }
+
+        #endregion
     }
 }
